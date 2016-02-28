@@ -15,18 +15,69 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 /**
  *
  * @author AhsonAhmed
  */
 public class WebCrawlPlayerData {
 
+    private static Connection conn = null;
+    private final static String RDSUrl = "jdbc:mysql://fantasysports.cvut0y8wktov.us-west-2.rds.amazonaws.com:3306/fantasysports?connectTimeout=2000";
+    private final static String RDSUser = "root";
+    private final static String RDSPassword = "hamyharrymic";
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         
-        String rootUrl = "http://www.basketball-reference.com/";
+       try {
+           Class.forName("com.mysql.jdbc.Driver").newInstance();
+           conn = DriverManager.getConnection(RDSUrl, RDSUser, RDSPassword);
+       } catch (Exception e) {
+           System.out.println("exception");
+           System.out.println(e);
+       }
+       
+       PreparedStatement stmt = null;
+       ResultSet rs = null;
+       String query = "select count(*) as total from NBAPlayer";
+        System.out.println("Hello: ");
+		try {
+			
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeQuery();
+                        //System.out.println("Hello1: " + rs.getInt("total"));
+			if (rs.next()) {
+				System.out.println("Hello2: " + rs.getInt("total"));
+			}
+		} catch (Exception e) {
+                    System.out.println("except2");
+                    System.out.println(e);
+		}
+       
+       //return;
+                
+                
+        query = "INSERT INTO NBAPlayer (playerID, playerName) values (1, \"Kobe Bryant\");";
+        System.out.println("Hello: ");
+        try {
+                stmt = conn.prepareStatement(query);
+                stmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("except2");
+            System.out.println(e);
+        }
+        
+        
+        /*String rootUrl = "http://www.basketball-reference.com/";
         
         int[] requestedStats = {10, 11, 20, 23, 24, 25, 26, 29};
         Map<Integer, String> statName = new HashMap<Integer, String>();
@@ -78,7 +129,7 @@ public class WebCrawlPlayerData {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
             //Logger.getLogger(WebCrawlPlayerData.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
     
 }

@@ -414,7 +414,7 @@ public class WebCrawlPlayerData {
 
         try {
             stmt = conn.prepareStatement(query);
-            rs = stmt.executeQuery();
+            rs = stmt.executeQuery();  // lgtm [java/database-resource-leak]
             while (rs.next()) {
                 playerIDs.put(rs.getString(1), rs.getInt(2));
             }

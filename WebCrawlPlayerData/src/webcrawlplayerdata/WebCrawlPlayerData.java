@@ -118,10 +118,7 @@ public class WebCrawlPlayerData {
             return false;
         }
 
-        PreparedStatement stmt;
-
-        try {
-            stmt = conn.prepareStatement(query.toString());
+        try (PreparedStatement stmt = conn.prepareStatement(query.toString())) {
             int rowCount = stmt.executeUpdate();
             if (verifyCount != rowCount) {
                 System.out.println("Mistake in query: rowCount = " + rowCount + ", verifyCount = " + verifyCount + ".");
@@ -417,7 +414,7 @@ public class WebCrawlPlayerData {
 
         try {
             stmt = conn.prepareStatement(query);
-            rs = stmt.executeQuery();
+            rs = stmt.executeQuery();  // lgtm [java/database-resource-leak]
             while (rs.next()) {
                 playerIDs.put(rs.getString(1), rs.getInt(2));
             }
